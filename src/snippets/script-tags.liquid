@@ -1,0 +1,4 @@
+{% assign bundleName = template.name | append: '.js' %}
+
+{{ 'theme.js' | asset_url | script_tag }}
+{{ bundleName | asset_url | script_tag }}

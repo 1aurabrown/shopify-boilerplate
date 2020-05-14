@@ -1,0 +1,52 @@
+{
+  "name": "shopify-laura-boilerplate",
+  "version": "1.0.0",
+  "private": true,
+  "author": "Laura Brown",
+  "keywords": [
+    "shopify",
+    "theme"
+  ],
+  "bugs": "https://github.com/Shopify/skeleton-theme/issues",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Shopify/skeleton-theme.git"
+  },
+  "scripts": {
+    "clean": "rm -rf dist/*",
+    "dev": "yarn clean && webpack --colors --mode development && theme deploy && concurrently --prefix name --names 'webpack,theme watch' --prefix-colors yellow,blue \"webpack --watch --colors --mode development\" \"theme watch\"",
+    "start": "yarn dev",
+    "download:settings": "theme download config/settings_data.json --dir=src/ --no-ignore",
+    "build": "yarn clean && webpack --mode production",
+    "deploy": "yarn build && theme deploy"
+  },
+  "dependencies": {
+    "@shopify/theme-a11y": "^3.1.0",
+    "@shopify/theme-currency": "^3.1.0",
+    "@shopify/theme-product-form": "^3.1.0",
+    "@shopify/theme-sections": "^3.1.0",
+    "core-js": "^3.6.4",
+    "lazysizes": "^5.2.0",
+    "quicklink": "^2.0.0-alpha",
+    "regenerator-runtime": "^0.13.5",
+    "tailwindcss": "^1.4.6"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.0",
+    "autoprefixer": "^9.7.5",
+    "babel-loader": "^8.1.0",
+    "concurrently": "^5.2.0",
+    "copy-webpack-plugin": "^5.1.1",
+    "css-loader": "^3.4.2",
+    "cssnano": "^4.1.10",
+    "cssnano-webpack-plugin": "^1.0.3",
+    "mini-css-extract-plugin": "^0.9.0",
+    "postcss-discard-comments": "^4.0.0",
+    "postcss-loader": "^3.0.0",
+    "terser-webpack-plugin": "^3.0.1",
+    "webpack": "5.0.0-beta.14",
+    "webpack-cli": "^3.3.11"
+  }
+}

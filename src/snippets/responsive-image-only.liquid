@@ -1,0 +1,28 @@
+{%- capture responsive_image_counter %}{% increment responsive_image_counter %}{% endcapture -%}
+
+{% assign src_width = default_width | default: 600  | append: 'x' %}
+
+{%- assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+{%- assign image_widths = '180,360,540,720,900,1080,1296,1512,1728,1944,2160,2376,2592,2808,3024' | split: ',' -%}
+{%- capture image_widths -%}
+  {%- for width in image_widths -%}
+    {%- comment -%} Check if image width is less or equal to width {%- endcomment -%}
+    {%- assign width_num = width | plus: 0 | round -%}
+    {%- if image.width >= width_num -%}{{ width_num }},{%- endif -%}
+  {%- endfor -%}
+  {{ image.width }}
+{%- endcapture -%}
+{%- assign image_widths = image_widths | strip_newlines -%}
+
+<img
+  {{ image_attributes }}
+  id="Image-{{ image.id }}-{{ responsive_image_counter }}"
+  class="lazyload {{ image_class }}"
+  src="{{ image | img_url: src_width }}"
+  data-src="{{ img_url }}"
+  data-widths="[{{ image_widths }}]"
+  data-aspectratio="{{ image.aspect_ratio }}"
+  data-sizes="auto"
+  tabindex="-1"
+  alt="{{ image.alt | escape }}"
+>
