@@ -1,6 +1,6 @@
 <footer>
 
-  {%- assign social_accounts = 'Facebook, Twitter, Pinterest, Instagram, Snapchat, Tumblr, YouTube, Vimeo,' | split: ', ' -%}
+  {%- assign social_accounts = 'Facebook, Twitter, Pinterest, Instagram' | split: ', ' -%}
   <ul>
     {% for social in social_accounts %}
       {%- assign social_handle = social | handleize -%}
