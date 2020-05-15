@@ -12,6 +12,7 @@ node_modules
 dist
 upload
 deploy.log
+config.yml
 config/shopify.yml
 config/settings_data.json
 npm-debug.log
