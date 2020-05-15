@@ -3,6 +3,9 @@
   "presets": {
     "Default": {
       "sections": {
+        "theme-styles": {
+          "type": "theme-styles"
+        },
         "collection-list": {
           "type": "collection-list",
           "blocks": {
@@ -33,6 +36,7 @@
         }
       },
       "content_for_index": [
+        "theme-styles",
         "collection-list",
         "featured-collection",
         "featured-product"
