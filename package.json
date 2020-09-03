@@ -27,7 +27,7 @@
     "@shopify/theme-product-form": "^3.1.0",
     "@shopify/theme-sections": "^3.1.0",
     "core-js": "^3.6.4",
-    "lazysizes": "^5.2.0",
+    "lazysizes": "^5.2.1",
     "quicklink": "^2.0.0-alpha",
     "regenerator-runtime": "^0.13.5",
     "tailwindcss": "^1.4.6"
