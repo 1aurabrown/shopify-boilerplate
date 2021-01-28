@@ -1,94 +1,49 @@
 {%- comment -%}
-    It creates a style tag and it restricts an image from growing larger than its max resolution.
+    Creates a style tag and it restricts an image from growing larger than its max resolution.
 
     Dependencies:
     - Lazysizes plugin (https://github.com/aFarkas/lazysizes) which enable responsive image with faster load time and better performance.
     - Lazysizes Responsive Images as a Service (https://github.com/aFarkas/lazysizes/tree/gh-pages/plugins/rias) To load the correct image size with our CDN
-    - Lazysizes Bgset (https://github.com/aFarkas/lazysizes/tree/gh-pages/plugins/bgset) To use responsive images on background-image (CSS)
+    - Lazysizes Object Fit (https://github.com/aFarkas/lazysizes/tree/gh-pages/plugins/object-fit) To calculate correct image size for contrained image.
 
     Accepts:
-    - max_width: {Number} Max width of the image container
-    - max_height: {Number} Max height of the image container
-    - aspect_ratio: {Number} Aspect ratio to enforce
-    - image: {Object} Image object
-    - image_class: {String} class name of the <img />
-    - image_attributes: {String}  additional HTML attributes of the <img />
-    - wrapper_class: {String} class name of the <div> wrapper
-    - wrapper_attributes: {String} additional HTML attributes of the <div> wrapper
+    placeholder_key: name of fallback svg for missing images (default: 'image')
+    fit: object-fit
 
-    Usage:
-    In your liquid template file, copy the following line
-    - {% include 'responsive-image' with image: featured_image, image_class: "css-class", wrapper_class: "wrapper-css-class", max_width: 700, max_height: 800 %}
+    crop_aspect_ratio: Aspect ratio used for cropping the image via Shopify image filters. If set,
+    image source template will use { height } placeholder and provide a data-aspect-ratio attribute to lazysizes.
+
+    If false, container bottom padding should be set by providing one or more classes, via {{ wrapper_class }}, that are styled correctly for the desired aspect ratio(s). Useful if you would like to style change the aspect ratio with breakpoints. (See helpers.css)
+
+    wrapper_class: classes to be applied to image wrapper
+
+    image_class: classes to be applied to <img>
 {%- endcomment -%}
 
 {%- comment -%} Added incremental number to avoid conflict styling code when the same images are using this snippet {%- endcomment -%}
-{%- capture responsive_image_counter %}{% increment responsive_image_counter %}{% endcapture -%}
-
-{% assign aspect_ratio_fallback = aspect_ratio %}
-
-{% if aspect_ratio_fallback == blank  %}
-  {% assign aspect_ratio_fallback = image.aspect_ratio %}
-{% endif %}
-
-<style>
-  #ImageWrapper-{{ image.id }}-{{ responsive_image_counter }}::before {
-    {%- comment -%}
-      When you change the window screen width, we want to make sure that the container's size is proportionally calculated.
-      Note regarding padding percentage: The percentage is calculated with respect to the width of the generated box's containing block (source: http://www.w3.org/TR/2011/REC-CSS2-20110607/box.html#padding-properties)
-    {%- endcomment -%}
-
-    {%- comment -%}
-      This will enforce the provided aspect ratio if there is one. The image behavior should be set in
-      the image_class (e.g. object-fit, object-center)
-    {%- endcomment-%}
-
-    padding-top:{{ 100 | divided_by: aspect_ratio_fallback }}%;
-  }
-</style>
-
-{%- assign img_url = image | img_url: '1x1' | crop: 'center' | replace: '_1x1.', '_{width}x{height}.' -%}
-
-{%- comment -%} Limit image widths to valid options based on image.width {%- endcomment -%}
-{%- assign image_widths = '180,360,540,720,900,1080,1296,1512,1728,1944,2160,2376,2592,2808,3024' | split: ',' -%}
-{%- capture image_widths -%}
-  {%- for width in image_widths -%}
-    {%- comment -%} Check if image width is less or equal to width {%- endcomment -%}
-    {%- assign width_num = width | plus: 0 | round -%}
-    {%- if image.width >= width_num -%}{{ width_num }},{%- endif -%}
-  {%- endfor -%}
-  {{ image.width }}
+{%- capture responsive_image_counter -%}{%- increment responsive_image_counter -%}{%- endcapture -%}
+{%- assign image_aspect_ratio = image.aspect_ratio -%}
+{%- assign aspect_ratio = crop_aspect_ratio | default: image_aspect_ratio | default: 1 -%}
+{%- capture wrapper_styles -%}
+{%- assign aspect_ratio = aspect_ratio | plus: 0 -%}
+padding-top: {{ 100 | divided_by: aspect_ratio }}%
 {%- endcapture -%}
-{%- assign image_widths = image_widths | strip -%}
 
-{% if default_width == blank or default_width < 100 %}
-  {% assign default_width = default_width | default: 500 %}
-{% endif %}
-{% assign img_url_string = default_width | append: 'x' %}
+{%- comment -%} data-aspectratio: aspect ratio of image file {%- endcomment -%}
+{%- comment -%} visual aspect ratio shoud be set via image wrapper's padding-bottom {%- endcomment -%}
 
-{% if aspect_ratio %}
-  {% assign default_height = default_width | times: aspect_ratio | round %}
-  {% assign img_url_string = img_url_string | append: default_height %}
-  {% assign default_image_url = image | img_url: img_url_string | crop: 'center' %}
-{% else %}
-  {% assign default_image_url = image | img_url: img_url_string %}
-{% endif %}
-
-
-
-<div id="ImageWrapper-{{ image.id }}-{{ responsive_image_counter }}" data-image-id="{{ image.id }}" class="responsive-image__wrapper {{ wrapper_class }}" {{ wrapper_attributes }}>
-  <img id="Image-{{ image.id }}-{{ responsive_image_counter }}"
-    class="responsive-image__image lazyload {{ image_class }}"
-    src="{{ default_image_url }}"
-    data-src="{{ img_url }}"
-    data-widths="[{{ image_widths }}]"
-    data-aspectratio="{{ aspect_ratio_fallback }}"
-    data-sizes="auto"
-    tabindex="-1"
-    alt="{{ image.alt | escape }}"
-    {{ image_attributes }}
-  >
+{%- assign image_class = image_class | append: " w-full h-full absolute inset-0" -%}
+<div id="ImageWrapper-{{ image.id }}-{{ responsive_image_counter }}"
+  data-image-id="{{ image.id }}"
+  class="overflow-hidden relative p-0 {{ wrapper_class }}">
+  <div class="overflow-hidden p-0 w-full" {%- if wrapper_styles != blank -%}style="{{ wrapper_styles }}"{%- endif -%}>
+    {%- include 'responsive-img-tag', image_class: image_class -%}
+  </div>
 </div>
 
-<noscript>
-  <img class="{{ image_class }}" src="{{ image | img_url: '2048x2048' }}" alt="{{ image.alt | escape }}">
-</noscript>
+{%- assign crop_aspect_ratio = blank -%}
+{%- assign image_class = blank -%}
+{%- assign wrapper_class = blank -%}
+{%- assign image = blank -%}
+{%- assign fit = blank -%}
+{%- assign aspect_ratio = blank -%}

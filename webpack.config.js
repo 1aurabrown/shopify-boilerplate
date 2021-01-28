@@ -4,57 +4,53 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin');
 const CssnanoPlugin = require('cssnano-webpack-plugin');
-var fs = require('fs');
 
-const scriptRoot = './src/scripts/'
-const entries = {
-  theme: {
-    import: './scripts/layout/theme.js',
-  }
+const scriptRoot = './src/scripts';
+
+var entries = {
+  theme: scriptRoot + '/layout/theme.js'
 }
-const templatesJS = glob.sync(scriptRoot + "templates/**/*.js").reduce((acc, path) => {
-    const entry = path.replace(scriptRoot + "templates/", '').replace('.js', '')
-    acc[entry] = {
-      import: path.replace('src/', ''),
-      dependOn: 'theme'
-    }
-    return acc
-}, entries)
 
-console.log(templatesJS)
+const files = glob.sync(scriptRoot + '/templates/*.js')
+files.forEach(function(file) {
+  var extension = path.extname(file);
+  var fileName = path.basename(file,extension);
+  entries[fileName] = file
+})
+
+
+console.log(entries)
 var config = {
   optimization: {
     minimizer: [
       new CssnanoPlugin({
-        test: /.s?css?$/,
-        sourceMap: true
+        test: /.scss$/
       }),
-      new TerserPlugin({
-        sourceMap: true
-      })
+      new TerserPlugin()
     ]
   },
 
-  entry: templatesJS,
-
+  entry: entries,
 
   output: {
     path: path.join(__dirname, 'dist/assets/'),
     filename: '[name].js',
   },
 
-  context: path.resolve(__dirname, 'src'),
-
   plugins: [
     new MiniCssExtractPlugin({
-      filename: "[name].css",
-      sourceMap: true
+      filename: "[name].css"
     }),
-    new CopyWebpackPlugin([{
-      from: '**/*',
-      to: path.join(__dirname, 'dist'),
-      ignore: ['styles/', 'scripts/', '*.js', '*.scss', '*.sass', '*.css', ],
-    }], {}),
+    new CopyWebpackPlugin({
+      patterns: [{
+        context: './src/',
+        from: '**/*',
+        to: path.join(__dirname, 'dist'),
+        globOptions: {
+          ignore: ["**/scripts/**", "**/styles/**"]
+        }
+      }],
+    }),
   ],
 
   module: {
@@ -72,17 +68,21 @@ var config = {
         },
       },
       {
-        test: /\.(sa|sc|c)ss$/,
+        test: /\.css$/,
         exclude: /node_modules/,
         use: [
-          { loader: MiniCssExtractPlugin.loader, options: { sourceMap: true }},
-          { loader: 'css-loader', options: { sourceMap: true }},
-          { loader: 'postcss-loader', options: { sourceMap: true }}
-        ]
+          MiniCssExtractPlugin.loader,
+          "css-loader",
+          "postcss-loader",
+        ],
       },
     ],
   },
-  target: 'web'
+  target: 'web',
+  watchOptions: {
+    poll: true,
+    ignored: /node_modules/
+  }
 };
 
 

@@ -46,13 +46,42 @@
     ]
   },
   {
-    "name": "Favicon",
+    "name": "Browser Branding",
     "settings": [
       {
+        "type": "color",
+        "id": "main_color",
+        "label": "Main Color",
+        "info": "Used when user saves website to home screen of their phone."
+      },
+      {
+        "type": "html",
+        "id": "favicon_svg",
+        "label": "Favicon image (SVG)",
+        "info": "Used by modern browsers"
+      },
+      {
+        "type": "html",
+        "id": "favicon_png",
+        "label": "Favicon image (PNG)",
+        "info": "Used as a fallback"
+      }
+    ]
+  },
+  {
+    "name": "Global Assets",
+    "settings": [
+      {
+        "type": "html",
+        "id": "logo_svg",
+        "label": "Logo (SVG)",
+        "info": "Used by modern browsers"
+      },
+      {
         "type": "image_picker",
-        "id": "favicon",
-        "label": "Favicon image",
-        "info": "Will be scaled down to 32 x 32px"
+        "id": "logo_png",
+        "label": "Logo (PNG)",
+        "info": "Used as a fallback"
       }
     ]
   }

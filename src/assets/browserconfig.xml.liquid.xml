@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<browserconfig>
+    <msapplication>
+        <tile>
+            <TileImage src="{{ settings.logo_png | img_url: '150x150' }}"/>
+            <square150x150logo src="{{ settings.logo_png | img_url: '150x150' }}"/>
+            <square70x70logo src="{{ settings.logo_png | img_url: '70x70' }}"/>
+            <wide310x150logo src="{{ settings.logo_png | img_url: '310x150' }}"/>
+            <square310x310logo src="{{ settings.logo_png | img_url: '310x310' }}"/>
+            <TileColor>{{ settings.main_color }}</TileColor>
+        </tile>
+    </msapplication>
+</browserconfig>

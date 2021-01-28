@@ -7,6 +7,21 @@
   <meta name="theme-color" content="">
   <link rel="canonical" href="{{ canonical_url }}">
 
+  {% capture manifest %}
+  {% render 'webmanifest' %}
+  {% endcapture %}
+
+  <link rel="manifest" href='data:application/manifest+json,{{ manifest |
+  strip_newlines }}' />
+
+  <link rel="mask-icon" href="{{ 'logo.svg' | asset_url }}" color="{{ settings.main_color }}">
+
+  <meta name="msapplication-config" content="{{ 'browserconfig.xml' | asset_url }}">
+  <meta name="msapplication-TileColor" content="{{ settings.main_color }}">
+  <meta name="msapplication-TileImage" content="{{ settings.logo_png | img_url: '150x150' }}">
+
+  <meta name="theme-color" content="{{ settings.main_color }}">
+
   {%- if settings.favicon != blank -%}
     <link rel="shortcut icon" href="{{ settings.favicon | img_url: '32x32' }}" type="image/png">
   {%- endif -%}

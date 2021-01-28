@@ -1,0 +1,97 @@
+{%- assign alt = alt | default: image.alt | default: '' -%}
+
+{%- comment -%}Only used if we are enforcing a different aspect ratio than the image's native aspect ratio{%- endcomment -%}
+{%- assign placeholder_key = placeholder_key | default: 'image' -%}
+{%- assign image_width = image.width | plus: 0 | round -%}
+{%- assign source = source | default: 'shopify' -%}
+
+{%- if image != blank -%}
+  {%- if source == 'shopify' -%}
+
+    {%- assign img_url_template = image | img_url: '1x1' -%}
+
+    {%- if crop_aspect_ratio != blank -%}
+      {%- if fit == 'cover' -%}
+        {%- assign img_url_template = img_url_template | crop: 'center' -%}
+      {%- endif -%}
+
+      {%- assign img_url_template = img_url_template  | replace: '_1x1.', '_{width}x{height}.' -%}
+
+    {%- else -%}
+      {%- assign img_url_template = img_url_template | replace: '_1x1.', '_{width}x.' -%}
+    {%- endif -%}
+
+  {%- elsif source == 'accentuate' -%}
+
+    {%- assign img_url_template = image.cloudinary_src | append: 'w_{width}' -%}
+
+    {%- if crop_aspect_ratio != blank -%}
+      {%- assign img_url_template = img_url_template | append: ',h_{height}' -%}
+
+      {%- if fit == 'contain' -%}
+        {%- assign img_url_template = img_url_template | append: ',c_fit' -%}
+      {%- else -%}
+        {%- assign img_url_template = img_url_template | append: ',c_fill' -%}
+      {%- endif -%}
+
+
+
+
+      {%- if fit == 'contain' -%}
+      {%- else -%}
+      {%- endif -%}
+    {%- endif -%}
+
+  {%- endif -%}
+
+  {%- comment -%} Limit image widths to valid options based on image_width {%- endcomment -%}
+
+  {%- assign image_widths = '180,360,540,720,900,1080,1296,1512,1728,1944,2160,2376,2592,2808,3024' | split: ',' -%}
+  {%- capture image_widths -%}
+    {%- for width in image_widths -%}
+      {%- comment -%} Check if image width is less or equal to width {%- endcomment -%}
+      {%- assign width_num = width | plus: 0 | round -%}
+      {%- if image_width >= width_num -%}{{ width_num }},{%- endif -%}
+    {%- endfor -%}
+    {{ image_width }}
+  {%- endcapture -%}
+  {%- assign image_widths = image_widths | strip -%}
+
+  {%- capture fit_class -%}
+    {%- if fit == 'contain' -%}
+      object-contain
+    {%- else -%}
+      object-cover
+    {%- endif -%}
+  {%- endcapture -%}
+
+
+  <img
+    class="lazyload {{ fit_class }} {{ image_class }} "
+    src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'  viewBox='0 0 600 {{ 600.0 | times: aspect_ratio }}'></svg>"
+    data-src="{{ img_url_template }}"
+    data-widths="[{{ image_widths }}]"
+    data-aspectratio="{{ aspect_ratio }}"
+    data-sizes="auto"
+    alt="{{ alt | strip | escape }}"
+    {{ image_attributes }}
+  />
+{%- else -%}
+  <img class="bg-green-light border {{ fit_class }} {{ image_class }} "
+  alt="{{ alt | strip | escape }}"
+  src="data:image/svg+xml;utf8,{{ placeholder_key | default: 'image' | placeholder_svg_tag | escape }}" />
+{%- endif -%}
+
+
+{%- assign placeholder_key = blank -%}
+{%- assign placeholder_svg_tag = blank -%}
+{%- assign alt = blank -%}
+{%- assign image_class = blank -%}
+{%- assign image = blank -%}
+{%- assign fit = blank -%}
+{%- assign source = blank -%}
+{%- assign aspect_ratio = blank -%}
+{%- assign crop_aspect_ratio = blank -%}
+{%- assign img_url_template = blank -%}
+{%- assign image_widths = blank -%}
+{%- assign image_attributes = blank -%}
