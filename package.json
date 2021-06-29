@@ -18,7 +18,7 @@
     "dev": "yarn clean && webpack --color --mode development && theme deploy && concurrently --prefix name --names 'webpack,theme watch' --prefix-colors yellow,blue \"webpack --watch --color --mode development\" \"theme watch\"",
     "start": "yarn dev",
     "download:settings": "theme download config/settings_data.json --dir=src/ --no-ignore",
-    "build": "yarn clean && webpack --mode production",
+    "build": "yarn clean && NODE_ENV=production webpack --mode=production",
     "deploy": "yarn build && theme deploy"
   },
   "dependencies": {
