@@ -3196,10 +3196,10 @@ q@^1.1.2:
   resolved "https://registry.yarnpkg.com/q/-/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
   integrity sha1-fjL3W0E4EpHQRhHxvxQQmsAGUdc=
 
-quicklink@^2.0.0-alpha:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/quicklink/-/quicklink-2.0.0.tgz#1dddb6e89f7c48705cf1cbd18159640040e352a7"
-  integrity sha512-jdWCd4JlR0jxSgLgB0kJJjuwjUNWMKzepnuWV4jYzV1FnesWofzVhwonLBCRQ9NJWZ0jl44t8oUDepOYdquCtA==
+quicklink@2.2:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/quicklink/-/quicklink-2.2.0.tgz#011f47d4e5f67622d9d49f02c74c913852b01f8b"
+  integrity sha512-tfleXCZvxDppyZFqSDsbkS5aKemtA0ealvguxjp3tzXHMo+pzxrWtOh+6dnYK/mXzEYM1QiNhGttcS/W/T3JXA==
   dependencies:
     route-manifest "^1.0.0"
     throttles "^1.0.0"

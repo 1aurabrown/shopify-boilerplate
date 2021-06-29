@@ -30,7 +30,7 @@
     "glob": "^7.1.6",
     "lazysizes": "^5.2.0",
     "postcss": "^8.2.4",
-    "quicklink": "^2.0.0-alpha",
+    "quicklink": "2.2",
     "regenerator-runtime": "^0.13.5",
     "tailwindcss": "^2.0.2"
   },
