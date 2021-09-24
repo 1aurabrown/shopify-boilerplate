@@ -30,7 +30,7 @@
     "core-js": "^3.6.4",
     "glob": "^7.1.6",
     "lazysizes": "^5.2.0",
-    "postcss": "^8.2.4",
+    "postcss": "^8.2.10",
     "quicklink": "2.2",
     "regenerator-runtime": "^0.13.5",
     "tailwindcss": "^2.2"
