@@ -5,5 +5,3 @@ import '../../styles/templates/index.css'
 import {load} from '@shopify/theme-sections';
 
 load('*');
-
-console.log('product.js')

@@ -78,7 +78,7 @@ var config = {
       },
     ],
   },
-  target: 'web',
+  target: 'es5',
   watchOptions: {
     poll: true,
     ignored: /node_modules/

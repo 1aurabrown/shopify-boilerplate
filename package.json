@@ -18,21 +18,22 @@
     "dev": "yarn clean && webpack --color --mode development && theme deploy && concurrently --prefix name --names 'webpack,theme watch' --prefix-colors yellow,blue \"webpack --watch --color --mode development\" \"theme watch\"",
     "start": "yarn dev",
     "download:settings": "theme download config/settings_data.json --dir=src/ --no-ignore",
-    "build": "yarn clean && webpack --mode production",
+    "build": "yarn clean && NODE_ENV=production webpack --mode=production",
     "deploy": "yarn build && theme deploy"
   },
   "dependencies": {
     "@shopify/theme-a11y": "^4.1.0",
     "@shopify/theme-currency": "^4.1.0",
+    "@shopify/theme-product": "^4.1.1",
     "@shopify/theme-product-form": "^4.1.0",
     "@shopify/theme-sections": "^4.1.0",
     "core-js": "^3.6.4",
     "glob": "^7.1.6",
     "lazysizes": "^5.2.0",
     "postcss": "^8.2.4",
-    "quicklink": "^2.0.0-alpha",
+    "quicklink": "2.2",
     "regenerator-runtime": "^0.13.5",
-    "tailwindcss": "^2.0.2"
+    "tailwindcss": "^2.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
