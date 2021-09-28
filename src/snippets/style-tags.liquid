@@ -1,5 +1,10 @@
-{% assign bundleName = template.name | append: '.css' %}
-
 {{ 'fonts.css' | asset_url | stylesheet_tag }}
 {{ 'theme.css' | asset_url | stylesheet_tag }}
-{{ bundleName | asset_url | stylesheet_tag }}
+
+{% if template.name == 'index' %}
+ {{ 'index.css' | asset_url | stylesheet_tag }}
+
+{% elsif template.name == 'product' %}
+ {{ 'product.css' | asset_url | stylesheet_tag }}
+
+{% endif %}

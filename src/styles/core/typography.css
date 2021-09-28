@@ -1,3 +1,5 @@
-body {
-  font-family: sans-serif;
+@layer base {
+  body {
+    @apply font-sans;
+  }
 }

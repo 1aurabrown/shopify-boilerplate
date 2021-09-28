@@ -1,0 +1,176 @@
+<section class="container mx-auto px-4 section">
+    <h1 class="text-center text-xl my-8">{{ 'cart.general.title' | t }} ({{ cart.item_count }})</h1>
+
+    {% if cart.item_count > 0 %}
+
+      <form action="/cart" method="post" novalidate class="w-full xs-down:flex xs-down:flex-col">
+
+        <div class="xs-down:flex-grow w-full mx-auto md:grid md:grid-flow-row md:auto-rows-auto md:gap-8 lg:gap-18 cart__grid">
+
+          <div class="sm:max-w-sm md:max-w-full w-full mx-auto">
+            <table class="responsive-table table-auto w-full">
+
+              <tbody>
+
+                {% for item in cart.items %}
+
+                {% comment %}
+
+                Cart Item Template
+                =====================
+                The data-label attributes on <td> elements are mobile-friendly
+                helpers used for responsive-table labels
+                {% endcomment %}
+
+                  <tr class="responsive-table-row align-bottom lg:align-top">
+
+                    <td class="w-3/5 md:w-1/3 lg:w-1/4">
+
+                      {% if item.image != blank %}
+                        <a class="block" href="{{ item.url | within: collections.all }}">
+                          {% include 'responsive-image', image: item.image, alt: item.title %}
+                        </a>
+                      {% endif %}
+
+                    </td>
+
+                    <td class="text-left">
+                      <div class="pb-8 lg:pb-0 pl-4 lg:pl-9">
+
+                        <h2 class="">
+                          <a href="{{ item.url }}">
+                              {{ item.product.title }}
+                          </a>
+                        </h2>
+                        <p class=" lg:hidden">
+                          {% if item.original_line_price > item.final_line_price %}
+                            <s class="inline-block mr-2">{{ item.original_price | money_without_trailing_zeros }}</s>
+                          {% endif %}
+                          {{ item.final_line_price | money_without_trailing_zeros }}
+                          {% if item.line_level_discount_allocations.size > 0 %}
+                            <ul class="text-sm ">
+                            {% for discount_allocation in item.line_level_discount_allocations %}
+                              <li><span class="uppercase"> {{ discount_allocation.discount_application.title }}:</span>
+                              (-{{ discount_allocation.amount | money_without_trailing_zeros }})</li>
+                            {% endfor %}
+                            </ul>
+                          {% endif %}
+                        </p>
+
+                        <div class="mt-4">
+                          {% for option in item.options_with_values %}
+                            <p>{{ option.name }}: {{ option.value }}</p>
+                          {% endfor %}
+                        </div>
+
+                        {% comment %}Quantity{% endcomment %}
+                        <p>Quantity: {{ item.quantity }}</p>
+
+                        <a class="block mt-4" href="/cart/change?line={{ forloop.index }}&amp;quantity=0">
+                          <span class=" text-sm underline">Delete</span>
+                        </a>
+                      </div>
+                    </td>
+
+                    <td data-label="{{ 'cart.label.total' | t }}" class="text-right xs-down:mt-1 md-down:hidden">
+                      <p class="">
+                        {% if item.original_line_price > item.final_line_price %}
+                          <s class="inline-block mr-2">{{ item.original_price | money_without_trailing_zeros }}</s>
+                        {% endif %}
+                        {{ item.final_line_price | money_without_trailing_zeros }}
+                        {% if item.line_level_discount_allocations.size > 0 %}
+                          <ul class="text-sm ">
+                          {% for discount_allocation in item.line_level_discount_allocations %}
+                            <li><span class="uppercase"> {{ discount_allocation.discount_application.title }}:</span>
+                            (-{{ discount_allocation.amount | money_without_trailing_zeros }})</li>
+                          {% endfor %}
+                          </ul>
+                        {% endif %}
+                      </p>
+                    </td>
+                  </tr>
+
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+
+          <!-- bottom left -->
+            <div class="mt-8 md:mt-0 row-start-2 col-start-1 border-t-2 border-black pt-3">
+              <!-- cart notes/messages text -->
+              <div>
+                <div class="space-y-4  mx-auto md:ml-0">
+                  {% if settings.cart_notes_enable %}
+                    <div>
+                      <label class="block" for="CartSpecialInstructions">{{ 'cart.general.note' | t }}:</label>
+                      <textarea rows="4" class="border border-black border-opacity-50 w-full block mt-6 " name="note" id="CartSpecialInstructions">{{ cart.note }}</textarea>
+                    </div>
+                  {% endif %}
+
+                  {% if section.settings.cart_message != blank %}
+                    <div class="paragraph-spacing">{{ section.settings.cart_message }}</div>
+                  {% endif %}
+
+                </div>
+              </div>
+            <!-- end cart notes text -->
+            </div>
+          <!-- end bottom left -->
+
+          <!-- bottom right -->
+            <div class="py-0 bottom-0 left-0 right-0 static pt-3 col-start-2 row-start-2 md:border-t-2 border-black bg-transparent">
+
+              <input type="submit" name="checkout" class="button transition-colors duration-500 w-full mt-4 border-2 color-black p-3" value="{{ 'cart.general.checkout' | t }}">
+
+            </div>
+
+          <!-- bottom right -->
+
+
+
+        </div>
+
+      </form>
+    {% else %}
+      <div>
+
+        <div class="text-center mt-heading-space mx-auto underline-links">
+          {% comment %}
+          Cart empty state
+          {% endcomment %}
+          <div class="supports-cookies">
+            <p>{{ 'cart.general.empty' | t }}</p>
+            <p>{{ 'cart.general.continue_browsing_html' | t }}</p>
+          </div>
+
+          {% comment %}
+          Cart no cookies state
+          ---------------------
+          Browser cookies are required to use the cart. If cookies aren't enabled in the
+          browser a message is displayed prompting the user to enable them.
+          {% endcomment %}
+          <div class="supports-no-cookies">
+            <p>{{ 'cart.general.cookies_required' | t }}</p>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+  </div>
+
+</section>
+
+{% schema %}
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "richtext",
+        "id": "cart_message",
+        "label": "Custom Message",
+        "default": "<p>Taxes calculated at checkout.</p>"
+      }
+    ]
+  }
+{% endschema %}

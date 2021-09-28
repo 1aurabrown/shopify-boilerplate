@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="{{ shop.locale }}">
+<html class="no-js supports-no-cookies" lang="{{ shop.locale }}">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -29,9 +29,10 @@
   {% include 'head-seo' %}
   {% include 'head-json-ld' %}
   {% include 'meta-sharing' %}
-
+  <script type="text/javascript">
+    document.documentElement.className = document.documentElement.className.replace('no-js', '');
+  </script>
   {% include 'style-tags', layout: 'theme' %}
-  {% include 'script-tags', layout: 'theme' %}
 
   <script>
     window.theme = {
@@ -59,5 +60,6 @@
 
   {% section 'footer' %}
 
+  {% include 'script-tags', layout: 'theme' %}
 </body>
 </html>

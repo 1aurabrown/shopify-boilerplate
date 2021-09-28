@@ -1,11 +1,6 @@
-@charset 'UTF-8';
-
-
 @import "tailwindcss/base";
-@import './core/typography.css';
-
 @import "tailwindcss/components";
-/* @import "./custom-components.css"; */
-
 @import "tailwindcss/utilities";
-@import './core/helpers.css';
+
+@import "./core/typography.css";
+@import "./core/helpers.css";

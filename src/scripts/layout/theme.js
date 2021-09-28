@@ -14,11 +14,21 @@ import 'lazysizes/plugins/bgset/ls.bgset'
 import 'lazysizes'
 import 'lazysizes/plugins/respimg/ls.respimg'
 
+
+import cookiesEnabled from '../utilities/cookies-enabled';
+
 // Shopify
 
 import {load} from '@shopify/theme-sections'
 
 document.addEventListener("DOMContentLoaded", function(event) {
   load('*');
-  console.log('theme.js')
+
+  // Apply a specific class to the html element for browser support of cookies.
+  if (cookiesEnabled()) {
+    document.documentElement.className = document.documentElement.className.replace(
+      'supports-no-cookies',
+      'supports-cookies'
+    );
+  }
 });

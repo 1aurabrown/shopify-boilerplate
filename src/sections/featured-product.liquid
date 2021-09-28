@@ -7,111 +7,154 @@
   {%- assign onboarding_title = 'homepage.onboarding.product_title' | t -%}
 {% endif %}
 
-<div data-section-id="{{ section.id }}" data-section-type="product" itemscope itemtype="http://schema.org/Product">
+<section class="mx-auto section container px-4" data-section-id="{{ section.id }}" data-section-type="product" itemscope itemtype="http://schema.org/Product">
   <meta itemprop="name" content="{{ product.title }}">
   <meta itemprop="url" content="{{ shop.url }}{{ product.url }}">
   <meta itemprop="image" content="{{ featured_image | img_url: '800x' }}">
   <meta itemprop="description" content="{{ product.description | strip_html | escape }}">
 
-  {% if featured_image.src != blank %}
-    <img src="{{ featured_image | img_url: '480x480' }}" alt="{{ featured_image.alt | escape }}" data-product-featured-image>
-  {% endif %}
+  <div class="grid gap-10 grid-cols-3 grid-rows-1">
+    <div>
+      {% if section_onboarding %}
+        {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg placeholder-svg--small' }}
 
-  {% if product.images.size > 1 %}
-    <ul>
-      {% for image in product.images %}
-        <li>
-          <a href="{{ image.src | img_url: '480x480' }}" data-product-single-thumbnail>
-            <img src="{{ image.src | img_url: '160x160' }}" alt="{{ image.alt | escape }}">
-          </a>
-        </li>
-      {% endfor %}
-    </ul>
-  {% endif %}
+      {% else if featured_image.src != blank %}
+        {% for image in product.images %}
+          {% capture wrapper_class %}
+            {%- unless featured_image == image -%}
+              hidden
+            {%- endunless -%}
+          {% endcapture %}
 
-  <h1>{{ product.title | default: onboarding_title }}</h1>
-  {% if product.vendor != blank %}
-    <p>{{ product.vendor }}</p>
-  {% endif %}
+          {% include 'responsive-image' with
+            image: image,
+            max_width: 700,
+            max_height: 800,
+            image_attributes: "data-product-featured-image",
+            wrapper_class: wrapper_class,
+            wrapper_attributes: "data-product-image-wrapper",
+          %}
+        {% endfor %}
 
-  <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
-    <meta itemprop="priceCurrency" content="{{ shop.currency }}">
-    <meta itemprop="price" content="{{ product.price | divided_by: 100.00 }}">
-    <link itemprop="availability" href="http://schema.org/{% if product.available %}InStock{% else %}OutOfStock{% endif %}">
+        {% if product.images.size > 1 %}
+          <ul class="flex space-x-1 mt-1">
+            {% for image in product.images %}
+              <li>
+                <a href="{{ image.src | img_url: '480x480' }}" data-thumbnail-id="{{ image.id }}" data-product-single-thumbnail{% if featured_image == image %} aria-current="true"{% endif %}>
+                  <img class="product-single__thumbnail-image" src="{{ image.src | img_url: '160x160', crop: 'center' }}" alt="{{ image.alt | escape }}">
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endif %}
+    </div>
+    <div>
+      <h1>{{ product.title | default: onboarding_title }}</h1>
+      {% if product.vendor != blank %}
+        <p>{{ product.vendor }}</p>
+      {% endif %}
 
-    <form action="/cart/add" method="post" enctype="multipart/form-data">
-      {% unless product.has_only_default_variant %}
-        {% for option in product.options_with_values %}
-          <div class="selector-wrapper js">
-            <label for="SingleOptionSelector-{{ section.id }}-{{ forloop.index0 }}">
-              {{ option.name }}
-            </label>
+      <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+        <meta itemprop="priceCurrency" content="{{ shop.currency }}">
+        <meta itemprop="price" content="{{ product.price | divided_by: 100.00 }}">
+        <link itemprop="availability" href="http://schema.org/{% if product.available %}InStock{% else %}OutOfStock{% endif %}">
 
-            <select
-              id="SingleOptionSelector-{{ section.id }}-{{ forloop.index0 }}"
-              data-single-option-selector
-              data-index="option{{ option.position }}">
-              {% for value in option.values %}
+
+        {% form 'product', product, data-product-form: '', data-product-handle: product.handle, data-enable-history-state: 'true' %}
+          {% unless product.has_only_default_variant %}
+            {% for option in product.options_with_values %}
+              <div class="js">
+
+                {% if forloop.index0 > 0 %}
+
+                  {% for value in option.values %}
+                    <input type="radio" id="Option{{ option.position }}-{{ value }}" name="options[{{ option.name }}]" value="{{ value }}"{% if option.selected_value == value %} checked{% endif %}>
+                    <label for="Option{{ option.position }}-{{ value }}">{{ value }}</label>
+                  {% endfor %}
+
+                {% else %}
+
+                  <label for="Option{{ option.position }}">
+                    {{ option.name }}
+                  </label>
+
+                  <select
+                    id="Option{{ option.position }}"
+                    name="options[{{ option.name | escape }}]">
+                    {% for value in option.values %}
+                      <option
+                        value="{{ value | escape }}"
+                        {% if option.selected_value == value %}selected="selected"{% endif %}>
+                          {{ value }}
+                      </option>
+                    {% endfor %}
+                  </select>
+
+                {% endif %}
+              </div>
+            {% endfor %}
+          {% endunless %}
+
+          <noscript>
+            <select name="id">
+              {% for variant in product.variants %}
                 <option
-                  value="{{ value | escape }}"
-                  {% if option.selected_value == value %}selected="selected"{% endif %}>
-                    {{ value }}
+                  {% if variant == current_variant %}selected="selected"{% endif %}
+                  {% unless variant.available %}disabled="disabled"{% endunless %}
+                  value="{{ variant.id }}">
+                    {{ variant.title }}
                 </option>
               {% endfor %}
             </select>
-          </div>
-        {% endfor %}
-      {% endunless %}
+          </noscript>
 
-      <select name="id" class="no-js" data-product-select>
-        {% for variant in product.variants %}
-          <option
-            {% if variant == product.selected_or_first_available_variant %}selected="selected"{% endif %}
-            {% unless variant.available %}disabled="disabled"{% endunless %}
-            value="{{ variant.id }}">
-              {{ variant.title }}
-          </option>
-        {% endfor %}
-      </select>
+          <label for="Quantity">{{ 'products.product.quantity' | t }}</label>
+          <input type="number" id="Quantity" name="quantity" value="1" min="1">
 
-      <label for="Quantity-{{ section.id }}">{{ 'products.product.quantity' | t }}</label>
-      <input type="number" id="Quantity-{{ section.id }}" name="quantity" value="1" min="1">
+          <div data-price-wrapper>
+            <span data-product-price>
+              {{ current_variant.price | money }}
+            </span>
 
-      <div data-price-wrapper>
-        <span data-product-price>
-          {{ current_variant.price | default: '1999' | money }}
-        </span>
-
-        {% if product.compare_at_price_max > product.price %}
-          <span class="visually-hidden" data-compare-text>{{ 'products.product.regular_price' | t }}</span>
-          <s data-compare-price>
-            {% if current_variant.compare_at_price > current_variant.price %}
-              {{ current_variant.compare_at_price | money }}
+            {% if product.compare_at_price_max > product.price %}
+              <span class="visually-hidden" data-compare-text>{{ 'products.product.regular_price' | t }}</span>
+              <s data-compare-price>
+                {% if current_variant.compare_at_price > current_variant.price %}
+                  {{ current_variant.compare_at_price | money }}
+                {% endif %}
+              </s>
             {% endif %}
-          </s>
-        {% endif %}
+          </div>
+
+          <button
+            type="submit"
+            name="add"
+            data-submit-button
+            {% unless current_variant.available %}disabled="disabled"{% endunless %}>
+              <span data-submit-button-text>
+                {% if current_variant.available %}
+                  {{ 'products.product.add_to_cart' | t }}
+                {% else %}
+                  {{ 'products.product.sold_out' | t }}
+                {% endif %}
+              </span>
+          </button>
+        {% endform %}
+
       </div>
 
-      <button
-        type="submit"
-        name="add"
-        data-add-to-cart
-        {% unless product.available %}disabled="disabled"{% endunless %}
-        {% if section_onboarding %}disabled="disabled"{% endif %}>
-          <span data-add-to-cart-text>
-            {% if product.available %}
-              {{ 'products.product.add_to_cart' | t }}
-            {% else %}
-              {{ 'products.product.sold_out' | t }}
-            {% endif %}
-          </span>
-      </button>
-    </form>
 
-  </div>
-
-  <div class="rte">
-    {{ product.description }}
+      <div class="rte">
+        {% if section_onboarding %}
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          </p>
+        {% else %}
+          {{ product.description }}
+        {% endif %}
+      </div>
+    </div>
   </div>
 
   {% unless product == empty %}
@@ -119,7 +162,9 @@
       {{ product | json }}
     </script>
   {% endunless %}
-</div>
+  {%- include 'product-json-ld' -%}
+
+</section>
 
 {% schema %}
   {
