@@ -1,24 +1,13 @@
-{% capture class %}
-cart-page pt-top-mobile md:pt-top-desktop px-4 sm:px-bg-bar-mobile-inset md:px-bg-bar-desktop-inset min-h-vh sm:mb-20 md:mb-spacer-m
-{% endcapture %}
-
-{% capture title %}
-  <div class="text-center md:text-20 mb-5 md:mb-20">
-    <h1>{{ 'cart.general.title' | t }} ({{ cart.item_count }})</h1>
-  </div>
-{% endcapture %}
-
-<section class="container mx-auto px-4">
+<section class="container mx-auto px-4 section">
+    <h1 class="text-center text-xl my-8">{{ 'cart.general.title' | t }} ({{ cart.item_count }})</h1>
 
     {% if cart.item_count > 0 %}
 
-      <form action="/cart" method="post" novalidate class="{{ class }} w-full xs-down:flex xs-down:flex-col">
+      <form action="/cart" method="post" novalidate class="w-full xs-down:flex xs-down:flex-col">
 
-        {{ title }}
+        <div class="xs-down:flex-grow w-full mx-auto md:grid md:grid-flow-row md:auto-rows-auto md:gap-8 lg:gap-18 cart__grid">
 
-        <div class="xs-down:flex-grow w-full md:max-w-screen-md mx-auto md:grid md:grid-flow-row md:auto-rows-auto md:gap-8 lg:gap-18 cart__grid">
-
-          <div class="md:row-start-1 md:col-start-1 md:col-span-2 lg:col-span-1 sm:max-w-sm md:max-w-full w-full mx-auto">
+          <div class="sm:max-w-sm md:max-w-full w-full mx-auto">
             <table class="responsive-table table-auto w-full">
 
               <tbody>
@@ -59,7 +48,7 @@ cart-page pt-top-mobile md:pt-top-desktop px-4 sm:px-bg-bar-mobile-inset md:px-b
                           {% endif %}
                           {{ item.final_line_price | money_without_trailing_zeros }}
                           {% if item.line_level_discount_allocations.size > 0 %}
-                            <ul class="text-sm text-green-dark">
+                            <ul class="text-sm ">
                             {% for discount_allocation in item.line_level_discount_allocations %}
                               <li><span class="uppercase"> {{ discount_allocation.discount_application.title }}:</span>
                               (-{{ discount_allocation.amount | money_without_trailing_zeros }})</li>
@@ -78,7 +67,7 @@ cart-page pt-top-mobile md:pt-top-desktop px-4 sm:px-bg-bar-mobile-inset md:px-b
                         <p>Quantity: {{ item.quantity }}</p>
 
                         <a class="block mt-4" href="/cart/change?line={{ forloop.index }}&amp;quantity=0">
-                          <span class="text-green-dark text-sm underline">Delete</span>
+                          <span class=" text-sm underline">Delete</span>
                         </a>
                       </div>
                     </td>
@@ -90,7 +79,7 @@ cart-page pt-top-mobile md:pt-top-desktop px-4 sm:px-bg-bar-mobile-inset md:px-b
                         {% endif %}
                         {{ item.final_line_price | money_without_trailing_zeros }}
                         {% if item.line_level_discount_allocations.size > 0 %}
-                          <ul class="text-sm text-green-dark">
+                          <ul class="text-sm ">
                           {% for discount_allocation in item.line_level_discount_allocations %}
                             <li><span class="uppercase"> {{ discount_allocation.discount_application.title }}:</span>
                             (-{{ discount_allocation.amount | money_without_trailing_zeros }})</li>
@@ -106,62 +95,45 @@ cart-page pt-top-mobile md:pt-top-desktop px-4 sm:px-bg-bar-mobile-inset md:px-b
             </table>
           </div>
 
+
           <!-- bottom left -->
-            <div class="hidden md:block row-start-2 col-start-1 border-t-2 border-black pt-3">
-              {% include 'cart-totals' %}
+            <div class="mt-8 md:mt-0 row-start-2 col-start-1 border-t-2 border-black pt-3">
+              <!-- cart notes/messages text -->
+              <div>
+                <div class="space-y-4  mx-auto md:ml-0">
+                  {% if settings.cart_notes_enable %}
+                    <div>
+                      <label class="block" for="CartSpecialInstructions">{{ 'cart.general.note' | t }}:</label>
+                      <textarea rows="4" class="border border-black border-opacity-50 w-full block mt-6 " name="note" id="CartSpecialInstructions">{{ cart.note }}</textarea>
+                    </div>
+                  {% endif %}
+
+                  {% if section.settings.cart_message != blank %}
+                    <div class="paragraph-spacing">{{ section.settings.cart_message }}</div>
+                  {% endif %}
+
+                </div>
+              </div>
+            <!-- end cart notes text -->
             </div>
           <!-- end bottom left -->
 
           <!-- bottom right -->
-            <div class="hidden md:block py-0 bottom-0 left-0 right-0 static pt-3 col-start-2 row-start-2 border-t-2 border-black bg-transparent">
+            <div class="py-0 bottom-0 left-0 right-0 static pt-3 col-start-2 row-start-2 md:border-t-2 border-black bg-transparent">
 
-              <input type="submit" name="checkout" class="block  w-full text-left  bg-transparent" value="{{ 'cart.general.checkout' | t }}">
+              <input type="submit" name="checkout" class="button transition-colors duration-500 w-full mt-4 border-2 color-black p-3" value="{{ 'cart.general.checkout' | t }}">
 
             </div>
 
           <!-- bottom right -->
 
 
-          <!-- cart notes/messages text -->
-            <div class="text-sm md:col-start-1 md:row-start-3 md:col-span-2 lg:col-span-1 px-bg-bar-mobile md:px-0 my-8 md:my-0">
-              <div class="max-w-sm space-y-4  mx-auto md:ml-0">
-                {% if settings.cart_notes_enable %}
-                  <div>
-                    <label class="block" for="CartSpecialInstructions">{{ 'cart.general.note' | t }}:</label>
-                    <textarea rows="4" class="border border-black border-opacity-50 w-full block mt-6 " name="note" id="CartSpecialInstructions">{{ cart.note }}</textarea>
-                  </div>
-                {% endif %}
 
-                {% if section.settings.cart_message != blank %}
-                  <div class="paragraph-spacing">{{ section.settings.cart_message }}</div>
-                {% endif %}
-
-                <div class="paragraph-spacing">
-                  <!-- Message about currency conversion -->
-                  <div class="ultimate-currency-cart-notice"></div>
-                  <!-- End message about currency conversion -->
-                </div>
-              </div>
-            </div>
-          <!-- end cart notes text -->
         </div>
-
-        <!-- totals and checkout for small screens -->
-          <div class="sticky md:hidden bg-bglight z-10 px-bg-bar-mobile-inset sm:px-0 py-9 sm:p-0 left-0 right-0 bottom-0 -mx-4 sm:mx-0 mt-8">
-            <div class="max-w-sm mx-auto">
-              <div class="border-black border-t-2 border-solid pt-3">
-                {% include 'cart-totals' %}
-              </div>
-               <input type="submit" name="checkout" class="button    transition-colors duration-500 w-full mt-4 bg-bgdark color-black p-3" value="{{ 'cart.general.checkout' | t }}">
-             </div>
-          </div>
-        <!-- end totals and checkout for small screens -->
 
       </form>
     {% else %}
-      <div class="{{ class }}">
-
-        {{ title }}
+      <div>
 
         <div class="text-center mt-heading-space mx-auto underline-links">
           {% comment %}
