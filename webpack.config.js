@@ -57,7 +57,7 @@ var config = {
     rules: [
       {
         test: /\.js$/,
-        exclude: /node_modules/,
+        exclude: [/node_modules/, /assets/],
         use: {
           loader: 'babel-loader',
           options: {
@@ -69,16 +69,26 @@ var config = {
       },
       {
         test: /\.css$/,
-        exclude: /node_modules/,
+        exclude: [/node_modules/, /assets/],
         use: [
           MiniCssExtractPlugin.loader,
           "css-loader",
           "postcss-loader",
         ],
       },
+      {
+        // Don't process vendor css with postcss.
+        test: /\.(sa|sc|c)ss$/,
+        include: /node_modules/,
+        exclude: /assets/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader'
+        ]
+      },
     ],
   },
-  target: 'es5',
+  target: ["web", "es5"],
   watchOptions: {
     poll: true,
     ignored: /node_modules/
