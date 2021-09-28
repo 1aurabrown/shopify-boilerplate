@@ -28,7 +28,7 @@
 
 @layer utilities {
   .section {
-    @apply my-10;
+    @apply my-20;
   }
 
   /* Only show when JS is not supported */
