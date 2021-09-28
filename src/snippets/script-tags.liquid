@@ -1,4 +1,9 @@
-{% assign bundleName = template.name | append: '.js' %}
+<script type="text/javascript" defer src="{{ 'theme.js' | asset_url }}"></script>
 
-<script type="text/javascript" defer src="{{ 'theme.js' | asset_url }}" ></script>
-<script type="text/javascript" defer src="{{ bundleName | asset_url }}" ></script>
+{% if template.name == 'index' %}
+  <script type="text/javascript" defer src="{{'index.js' | asset_url }}"></script>
+
+{% elsif template.name == 'product' %}
+  <script type="text/javascript" defer src="{{'product.js' | asset_url }}"></script>
+
+{% endif %}
