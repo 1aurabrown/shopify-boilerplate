@@ -1,4 +1,4 @@
-<section data-section-id="{{ section.id }}" data-section-type="header">
+<section data-section-id="{{ section.id }}" data-section-type="header" class="container mx-auto px-4 py-4">
 
 
   {%- if section.settings.announcement_bar_enabled -%}
@@ -69,11 +69,6 @@
     {% endif %}
 
     <div class="flex-1 flex justify-end space-x-4">
-      <a href="/cart">
-        {{ 'layout.cart.title' | t }}
-        ({{ cart.item_count }} {{ 'layout.cart.items_count' | t: count: cart.item_count }})
-      </a>
-
       {% if shop.customer_accounts_enabled %}
         <ul class="space-x-4">
           {% if customer %}
@@ -100,9 +95,6 @@
       {% endif %}
 
       <form action="/search" method="get" role="search">
-        <label for="Search-{{ section.id }}" class="label-hidden">
-          {{ 'general.search.placeholder' | t }}
-        </label>
 
         <input type="search"
           name="q"
@@ -115,6 +107,12 @@
           <span class="icon-fallback-text">{{ 'general.search.submit' | t }}</span>
         </button>
       </form>
+
+      <a href="/cart">
+        {{ 'layout.cart.title' | t }}
+        ({{ cart.item_count }})
+      </a>
+
     </div>
   </header>
 
