@@ -103,7 +103,7 @@
             </select>
           </noscript>
 
-          <label for="Quantity">{{ 'products.product.quantity' | t }}</label>
+          <label for="Quantity">{{ 'products.product.quantity.label' | t }}</label>
           <input type="number" id="Quantity" name="quantity" value="1" min="1">
 
           <div data-price-wrapper>
@@ -112,7 +112,7 @@
             </span>
 
             {% if product.compare_at_price_max > product.price %}
-              <span class="visually-hidden" data-compare-text>{{ 'products.product.regular_price' | t }}</span>
+              <span class="visually-hidden" data-compare-text>{{ 'products.product.price.regular_price' | t }}</span>
               <s data-compare-price>
                 {% if current_variant.compare_at_price > current_variant.price %}
                   {{ current_variant.compare_at_price | money }}

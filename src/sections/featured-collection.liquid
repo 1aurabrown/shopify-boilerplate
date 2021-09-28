@@ -25,8 +25,9 @@
           {% if product.compare_at_price > product.price %}
 
             {% if product.price_varies %}
+              {{ 'products.product.on_sale' | t }}
               {%- assign sale_price = product.price | money -%}
-              {{ 'products.product.on_sale_from_html' | t: price: sale_price }}
+              {{ 'products.product.price.from_price_html' | t: price: sale_price }}
             {% else %}
               {{ 'products.product.on_sale' | t }}
               {{ product.price | money }}
@@ -54,7 +55,7 @@
             {{ 'product-' | append: current | placeholder_svg_tag: 'placeholder-svg placeholder-svg--small' }}
 
             <p>
-              {{ 'homepage.onboarding.product_title' | t }}
+              Product Title
             </p>
           </a>
 

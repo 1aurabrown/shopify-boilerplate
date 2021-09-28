@@ -101,16 +101,15 @@
           class="border-b"
           id="Search-{{ section.id }}"
           value="{{ search.terms | escape }}"
-          placeholder="{{ 'general.search.placeholder' | t }}">
+          placeholder="Search our store">
 
         <button type="submit" class="button">
-          <span class="icon-fallback-text">{{ 'general.search.submit' | t }}</span>
+          <span>Submit</span>
         </button>
       </form>
 
       <a href="/cart">
-        {{ 'layout.cart.title' | t }}
-        ({{ cart.item_count }})
+        Cart ({{ cart.item_count }})
       </a>
 
     </div>

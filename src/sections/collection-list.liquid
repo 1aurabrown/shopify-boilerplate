@@ -20,7 +20,7 @@
 
           <p>
             {% if collection == empty %}
-              {{ 'homepage.onboarding.collection_title' | t }}
+              Collection Title
             {% else %}
               {{ collection.title }}
             {% endif %}
@@ -65,6 +65,15 @@
         "name": "Collection list",
         "category": "Collection",
         "blocks": [
+          {
+            "type": "collection"
+          },
+          {
+            "type": "collection"
+          },
+          {
+            "type": "collection"
+          },
           {
             "type": "collection"
           },
