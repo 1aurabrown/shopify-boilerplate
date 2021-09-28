@@ -35,15 +35,17 @@ padding-top: {{ 100 | divided_by: aspect_ratio }}%
 {%- assign image_class = image_class | append: " w-full h-full absolute inset-0" -%}
 <div id="ImageWrapper-{{ image.id }}-{{ responsive_image_counter }}"
   data-image-id="{{ image.id }}"
-  class="overflow-hidden relative p-0 {{ wrapper_class }}">
+  class="overflow-hidden relative p-0 {{ wrapper_class }}"
+  {{ wrapper_attributes }}>
   <div class="overflow-hidden p-0 w-full" {%- if wrapper_styles != blank -%}style="{{ wrapper_styles }}"{%- endif -%}>
-    {%- include 'responsive-img-tag', image_class: image_class -%}
+    {%- include 'responsive-img-tag', image_class: image_class, image_attributes: image_attributes -%}
   </div>
 </div>
 
 {%- assign crop_aspect_ratio = blank -%}
 {%- assign image_class = blank -%}
 {%- assign wrapper_class = blank -%}
+{%- assign wrapper_attributes = blank -%}
 {%- assign image = blank -%}
 {%- assign fit = blank -%}
 {%- assign aspect_ratio = blank -%}
