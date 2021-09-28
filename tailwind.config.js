@@ -3,9 +3,8 @@ const tailwindSpacing = require('./tailwind_custom/tailwind-spacing');
 module.exports = {
   purge: {
     content: [
-      'src/scripts/**/*.js',
-      'src/**/*.liquid',
-      'src/styles/**/*.css',
+      './src/**/*.js',
+      './src/**/*.liquid'
     ]
   },
   theme: {

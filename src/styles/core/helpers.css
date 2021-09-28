@@ -1,9 +1,4 @@
-
 @layer components {
-
-  .skip-link {
-    left: -999px;
-  }
 
   .skip-link {
     left: -999px;
@@ -32,13 +27,8 @@
 }
 
 @layer utilities {
-
-  .helper {
-    color: red;
-  }
   .section {
-    margin-top: 10rem;
-    margin-bottom: 10rem;
+    @apply my-10;
   }
 
   /* Only show when JS is not supported */
